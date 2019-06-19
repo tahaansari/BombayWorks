@@ -1,0 +1,84 @@
+<html>
+   <head>
+      <title>Area Of Shape</title>
+   </head>
+   <body>
+
+	<form name='form1'>
+	  <div class="selectShape">
+	  	<input id="rdoRectangle" type="radio">
+	  	<label for="rdoRectangle">Rectangle</label>
+
+	  	<input id="rdoCircle" type="radio">
+	  	<label for="rdoCircle">Circle</label>
+
+	  	<input id="rdoSquare" type="radio">
+	  	<label for="rdoSquare">Square</label>
+
+	  	<input id="rdoEclipse" type="radio">
+	  	<label for="rdoEclipse">Eclipse</label>
+	  </div>
+
+      <br>
+
+	  <b>Enter the area of rectangle:</b>
+      <label>Width</label>
+      <input type="text" name="txtRectWidth" size=10>
+      <label>Length</label>
+      <input type="text" name="txtRectLength" size=10>
+      <input type="button" value="Calculate" onClick='CalculateRect();'>
+
+
+      <b>Enter the radius of circle:</b>
+      <input type="text" name="txtRadius" size=10>
+      <input type="button" value="Calculate" onClick='CalculateCircle();'>
+
+      <br>
+
+      <b>Enter the area of Square:</b>
+      <label>side (A)</label>
+      <input type="text" name="txtsquareside" size=10>
+      <input type="button" value="Calculate" onClick='CalculateSquare();'>
+
+      <br>
+
+      <b>Enter the area of Ellipse:</b>
+      <label>Side A(X-asix)</label>
+      <input type="text" name="txtSideA" size=10>
+      <label>Side B(Y-axis)</label>
+      <input type="text" name="txtSideB" size=10>
+      <input type="button" value="Calculate" onClick='CalculateEllipse();'>
+
+      <br>
+
+	  <div class="result"></div>
+
+    </form>
+
+      <script type="text/javascript">
+
+      	function CalculateCircle() {
+		    var radius = document.form1.txtRadius.value;
+		    document.getElementsByClassName('result')[0].innerHTML = "<P>The area of the circle is " + (radius * radius * Math.PI) + "</p>";
+		}
+
+		function CalculateRect() {
+		    var width = document.form1.txtRectWidth.value;
+		    var length = document.form1.txtRectLength.value;
+		    document.getElementsByClassName('result')[0].innerHTML = "<P>The area of the rectangle is " + (width * length) + "</p>";
+		}
+
+		function CalculateSquare() {
+		    var sideA = document.form1.txtsquareside.value;
+		    document.getElementsByClassName('result')[0].innerHTML = "<P>The area of the square is " + (Math.pow(sideA, 2)) + "</p>";
+		}
+
+		function CalculateEllipse() {
+		    var sideXA = document.form1.txtSideA.value;
+		    var sideYB = document.form1.txtSideB.value;
+		    document.getElementsByClassName('result')[0].innerHTML = "<P>The area of the ellipse is " + (sideXA * sideYB * Math.PI) + "</p>";
+		}
+         
+      </script>
+   </body>
+</html>
