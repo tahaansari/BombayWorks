@@ -1,84 +1,109 @@
 <html>
    <head>
-      <title>Area Of Shape</title>
+      <title>JavaScript</title>
+      <style>
+         *{
+            margin:0;
+            padding: 0;
+         }
+      </style>
    </head>
    <body>
+   <div id="app">
+      <div v-if="step === 1">
+         <ul>
+            <li>
+               <input id="rdoRectangle" type="radio" v-model='selectedShape' value="rectangle">
+               <label for="rdoRectangle">Rectangle</label>
+            </li>
+            <li>
+               <input id="rdoCircle" type="radio" v-model='selectedShape' value="circle">
+               <label for="rdoCircle">Circle</label>
+            </li>
+            <li>
+               <input id="rdoSquare" type="radio" v-model='selectedShape' value="square">
+               <label for="rdoSquare">Square</label>
+            </li>
+            <li>
+               <input id="rdoEllipse" type="radio" v-model='selectedShape' value="ellipse">
+               <label for="rdoEllipse">Eclipse</label>
+            </li>
+         </ul>
+      </div>
+      <div v-if="step === 2">
+         <div v-if="selectedShape === 'rectangle'">
+            <p>Enter the area of Rectangle:</p>
+            <label>Width</label>
+            <input type="text">
+            <label>Length</label>
+            <input type="text">
+            <input type="button" value="Calculate">
+         </div>
+         <div v-if="selectedShape === 'circle'">
+            <p>Enter the radius of Circle:</p>
+            <input type="text">
+            <input type="button" value="Calculate">
+         </div>
+         <div v-if="selectedShape === 'square'">
+            <p>Enter the area of Square:</p>
+            <label>side (A)</label>
+            <input type="text">
+            <input type="button" value="Calculate">
+         </div>
+         <div v-if="selectedShape === 'ellipse'">
+            <p>Enter the area of Ellipse:</p>
+            <label>Side A(X-asix)</label>
+            <input type="text">
+            <label>Side B(Y-axis)</label>
+            <input type="text">
+            <input type="button" value="Calculate">
+         </div>
+      </div>
+      <div v-if="step === 3">
+         <div>
+            <p>You have calculated the area of
+            rectangle to be xx. Below is your
+            result:</p>
+           <p>The area is xx.</p>
+         </div> 
+      </div>
 
-	<form name='form1'>
-	  <div class="selectShape">
-	  	<input id="rdoRectangle" type="radio">
-	  	<label for="rdoRectangle">Rectangle</label>
+      <ul>
+         {{errors}}
+      </div>
 
-	  	<input id="rdoCircle" type="radio">
-	  	<label for="rdoCircle">Circle</label>
-
-	  	<input id="rdoSquare" type="radio">
-	  	<label for="rdoSquare">Square</label>
-
-	  	<input id="rdoEclipse" type="radio">
-	  	<label for="rdoEclipse">Eclipse</label>
-	  </div>
-
-      <br>
-
-	  <b>Enter the area of rectangle:</b>
-      <label>Width</label>
-      <input type="text" name="txtRectWidth" size=10>
-      <label>Length</label>
-      <input type="text" name="txtRectLength" size=10>
-      <input type="button" value="Calculate" onClick='CalculateRect();'>
-
-
-      <b>Enter the radius of circle:</b>
-      <input type="text" name="txtRadius" size=10>
-      <input type="button" value="Calculate" onClick='CalculateCircle();'>
-
-      <br>
-
-      <b>Enter the area of Square:</b>
-      <label>side (A)</label>
-      <input type="text" name="txtsquareside" size=10>
-      <input type="button" value="Calculate" onClick='CalculateSquare();'>
-
-      <br>
-
-      <b>Enter the area of Ellipse:</b>
-      <label>Side A(X-asix)</label>
-      <input type="text" name="txtSideA" size=10>
-      <label>Side B(Y-axis)</label>
-      <input type="text" name="txtSideB" size=10>
-      <input type="button" value="Calculate" onClick='CalculateEllipse();'>
-
-      <br>
-
-	  <div class="result"></div>
-
-    </form>
-
-      <script type="text/javascript">
-
-      	function CalculateCircle() {
-		    var radius = document.form1.txtRadius.value;
-		    document.getElementsByClassName('result')[0].innerHTML = "<P>The area of the circle is " + (radius * radius * Math.PI) + "</p>";
-		}
-
-		function CalculateRect() {
-		    var width = document.form1.txtRectWidth.value;
-		    var length = document.form1.txtRectLength.value;
-		    document.getElementsByClassName('result')[0].innerHTML = "<P>The area of the rectangle is " + (width * length) + "</p>";
-		}
-
-		function CalculateSquare() {
-		    var sideA = document.form1.txtsquareside.value;
-		    document.getElementsByClassName('result')[0].innerHTML = "<P>The area of the square is " + (Math.pow(sideA, 2)) + "</p>";
-		}
-
-		function CalculateEllipse() {
-		    var sideXA = document.form1.txtSideA.value;
-		    var sideYB = document.form1.txtSideB.value;
-		    document.getElementsByClassName('result')[0].innerHTML = "<P>The area of the ellipse is " + (sideXA * sideYB * Math.PI) + "</p>";
-		}
-         
-      </script>
+      <button v-show="!(step == 3)" v-model="nextCount" v-on:click="next">Next</button>
+      <button v-show="!(step == 1)" v-on:click="prev">
+         <div v-if="step == 3">Start Over</div>
+         <div v-else>Cancel</div>
+      </button>
+   </div>
+   <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+   <script type="text/javascript">
+         var app = new Vue({
+           el: '#app',
+           data: {
+             selectedShape: '',
+             step: 1,
+             nextCount:1,
+             errors:''
+           },
+           methods:{
+               next:function(){
+                  if(this.selectedShape==""){
+                     this.errors.push("<li>Please select a shape</li>");
+                     return false;
+                  }
+                  this.nextCount++;
+                  this.step = this.nextCount;
+               },
+               prev:function(){
+                  this.step = 1;
+                  this.nextCount = 1;
+               }
+           }
+         })
+   </script>
    </body>
 </html>
