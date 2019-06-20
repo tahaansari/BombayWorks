@@ -1,62 +1,65 @@
 <html>
    <head>
       <title>JavaScript</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>
          *{
             margin:0;
             padding: 0;
          }
       </style>
+
    </head>
    <body>
    <div id="app">
       <div v-if="step === 1">
          <ul>
             <li>
-               <input id="rdoRectangle" type="radio" v-model='selectedShape' value="rectangle">
+               <input id="rdoRectangle" type="radio" v-model='inputs.selectedShape' value="rectangle">
                <label for="rdoRectangle">Rectangle</label>
             </li>
             <li>
-               <input id="rdoCircle" type="radio" v-model='selectedShape' value="circle">
+               <input id="rdoCircle" type="radio" v-model='inputs.selectedShape' value="circle">
                <label for="rdoCircle">Circle</label>
             </li>
             <li>
-               <input id="rdoSquare" type="radio" v-model='selectedShape' value="square">
+               <input id="rdoSquare" type="radio" v-model='inputs.selectedShape' value="square">
                <label for="rdoSquare">Square</label>
             </li>
             <li>
-               <input id="rdoEllipse" type="radio" v-model='selectedShape' value="ellipse">
+               <input id="rdoEllipse" type="radio" v-model='inputs.selectedShape' value="ellipse">
                <label for="rdoEllipse">Eclipse</label>
             </li>
          </ul>
       </div>
       <div v-if="step === 2">
-         <div v-if="selectedShape === 'rectangle'">
-            <p>Enter the area of Rectangle:</p>
-            <label>Width</label>
-            <input type="text">
-            <label>Length</label>
-            <input type="text">
-            <input type="button" value="Calculate">
+         <div v-if="inputs.selectedShape === 'rectangle'">
+            <p>You have selected a rectangle, please
+input the required variables:</p>
+            <p>Enter The Length*</p>
+            <input type="number" v-model="inputs.recLength">
+            <p>Enter The Width*</p>
+            <input type="number" v-model="inputs.recWidth">
+            <input type="button" v-on:click="next" value="Calculate">
          </div>
-         <div v-if="selectedShape === 'circle'">
+         <div v-if="inputs.selectedShape === 'circle'">
             <p>Enter the radius of Circle:</p>
-            <input type="text">
-            <input type="button" value="Calculate">
+            <input type="number" v-model="inputs.cirRadius">
+            <input type="button" v-on:click="next" value="Calculate">
          </div>
-         <div v-if="selectedShape === 'square'">
+         <div v-if="inputs.selectedShape === 'square'">
             <p>Enter the area of Square:</p>
-            <label>side (A)</label>
-            <input type="text">
-            <input type="button" value="Calculate">
+            <p>side (A)</p>
+            <input type="number" v-model="inputs.squSide">
+            <input type="button" v-on:click="next" value="Calculate">
          </div>
-         <div v-if="selectedShape === 'ellipse'">
+         <div v-if="inputs.selectedShape === 'ellipse'">
             <p>Enter the area of Ellipse:</p>
-            <label>Side A(X-asix)</label>
-            <input type="text">
-            <label>Side B(Y-axis)</label>
-            <input type="text">
-            <input type="button" value="Calculate">
+            <p>Side A(X-asix)</p>
+            <input type="number" v-model="inputs.xaxis">
+            <p>Side B(Y-axis)</p>
+            <input type="number" v-model="inputs.yaxis">
+            <input type="button" v-on:click="next" value="Calculate">
          </div>
       </div>
       <div v-if="step === 3">
@@ -67,43 +70,129 @@
            <p>The area is xx.</p>
          </div> 
       </div>
-
-      <ul>
-         {{errors}}
+   
+      <div v-if="errors">
+         <p v-for="error in errors">{{error}}</p>
       </div>
 
-      <button v-show="!(step == 3)" v-model="nextCount" v-on:click="next">Next</button>
+
+      <button v-show="!(step == 3)" v-on:click="next">Next</button>
       <button v-show="!(step == 1)" v-on:click="prev">
          <div v-if="step == 3">Start Over</div>
          <div v-else>Cancel</div>
       </button>
    </div>
-   <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.js"></script>
    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
    <script type="text/javascript">
+
+         class Shape{
+           constructor(shapeName,a,b){
+             this.shapeName = shapeName;
+             this.a = a;
+             this.b = b;
+           } 
+           getArea(){
+             
+             switch(this.shapeName){
+               case "circle": 
+               return this.a*this.a*Math.PI
+               break;
+               
+               case "rectangle": 
+               return this.a*this.b
+               break;
+                 
+               default: return '"'+this.shapeName+'"'+" is not a Shape"
+               break;
+             }
+             
+           }
+         }
+
+
          var app = new Vue({
            el: '#app',
            data: {
-             selectedShape: '',
              step: 1,
              nextCount:1,
-             errors:''
+             errors:[],
+             inputs:{
+               selectedShape:null,
+               recLength:null,
+               recWidth:null,
+               cirRadius:null,
+               squSide:null,
+               xaxis:null,
+               yaxis:null
+             },
            },
            methods:{
                next:function(){
-                  if(this.selectedShape==""){
-                     this.errors.push("<li>Please select a shape</li>");
-                     return false;
+
+                  this.errors = [];
+
+                  if(this.step == 1){
+                     if(!this.inputs.selectedShape){
+                        this.errors.push('Please select a shape');
+                     }
+                     if(this.errors.length > 0){
+                        return false;
+                     }
                   }
+
+                  if(this.step == 2){
+
+                     if(this.inputs.selectedShape == 'rectangle'){
+                        if(!this.inputs.recLength){
+                           this.errors.push('Length field required');
+                        }
+                        if(!this.inputs.recWidth){
+                           this.errors.push('Width field required');
+                        }
+
+                        if(this.errors.length > 0){
+                           return false;
+                        }
+
+                        var rectangle = new Shape('rectangle',this.inputs.recLength,this.inputs.recWidth);
+                        alert(rectangle.getArea())
+                     }
+
+                     if(this.inputs.selectedShape == 'circle'){
+                        if(!this.inputs.cirRadius){
+                           this.errors.push('Radius field required');
+                        }
+                     }
+
+                     if(this.inputs.selectedShape == 'square'){
+                        if(!this.inputs.squSide){
+                           this.errors.push('Side field required');
+                        }
+                     }
+
+                     if(this.inputs.selectedShape == 'ellipse'){
+                        if(!this.inputs.xaxis){
+                           this.errors.push('x-asix field required');
+                        }
+                        if(!this.inputs.yaxis){
+                           this.errors.push('y-axis field required');
+                        }
+                     }
+                  }
+
                   this.nextCount++;
                   this.step = this.nextCount;
                },
                prev:function(){
+
+                  this.errors = [];
+
                   this.step = 1;
                   this.nextCount = 1;
                }
            }
          })
    </script>
+
    </body>
 </html>
